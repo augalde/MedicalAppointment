@@ -239,6 +239,7 @@
     <Compile Include="Controllers\PacientesController.cs" />
     <Compile Include="Controllers\TipoCitasController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DAL\CitaRepository.cs" />
     <Compile Include="DAL\GenericRepository.cs" />
     <Compile Include="DAL\ICitaRepository.cs" />
     <Compile Include="DAL\IPacienteRepository.cs" />

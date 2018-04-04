@@ -10,24 +10,31 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MedicalAppointment.Models;
+using MedicalAppointment.DAL;
 
 namespace MedicalAppointment.Controllers
 {
     public class CitasController : ApiController
     {
-        private MedicalAppointmentContext db = new MedicalAppointmentContext();
+        //private MedicalAppointmentContext db = new MedicalAppointmentContext();
+        private ICitaRepository citaRepository;
 
-        // GET: api/Citas
-        public IQueryable<Cita> GetCitas()
+        public CitasController()
         {
-            return db.Citas;
+            this.citaRepository = new CitaRepository(new RepositoryContext());
+        }
+        // GET: api/Citas
+        public List<Cita> GetCitas()
+        {
+            List<Cita> citas = citaRepository.GetCitas();
+            return citas;
         }
 
         // GET: api/Citas/5
         [ResponseType(typeof(Cita))]
-        public async Task<IHttpActionResult> GetCita(int id)
+        public IHttpActionResult GetCita(int id)
         {
-            Cita cita = await db.Citas.FindAsync(id);
+            Cita cita = citaRepository.GetCitaByID(id);//await db.Citas.FindAsync(id);
             if (cita == null)
             {
                 return NotFound();
@@ -38,7 +45,7 @@ namespace MedicalAppointment.Controllers
 
         // PUT: api/Citas/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutCita(int id, Cita cita)
+        public IHttpActionResult PutCita(int id, Cita cita)
         {
             if (!ModelState.IsValid)
             {
@@ -50,11 +57,12 @@ namespace MedicalAppointment.Controllers
                 return BadRequest();
             }
 
-            db.Entry(cita).State = EntityState.Modified;
-
+            //db.Entry(cita).State = EntityState.Modified;
+            citaRepository.UpdateCita(cita);
             try
             {
-                await db.SaveChangesAsync();
+                //await db.SaveChangesAsync();
+                citaRepository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -80,25 +88,28 @@ namespace MedicalAppointment.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Citas.Add(cita);
-            await db.SaveChangesAsync();
+            //db.Citas.Add(cita);
+            //await db.SaveChangesAsync();
+            citaRepository.InsertCita(cita);
+            citaRepository.Save();
 
             return CreatedAtRoute("DefaultApi", new { id = cita.Id }, cita);
         }
 
         // DELETE: api/Citas/5
         [ResponseType(typeof(Cita))]
-        public async Task<IHttpActionResult> DeleteCita(int id)
+        public IHttpActionResult DeleteCita(int id)
         {
-            Cita cita = await db.Citas.FindAsync(id);
+            Cita cita = citaRepository.GetCitaByID(id);//await db.Citas.FindAsync(id);
             if (cita == null)
             {
                 return NotFound();
             }
 
-            db.Citas.Remove(cita);
-            await db.SaveChangesAsync();
-
+            //db.Citas.Remove(cita);
+            //await db.SaveChangesAsync();
+            citaRepository.DeleteCita(id);
+            citaRepository.Save();
             return Ok(cita);
         }
 
@@ -106,14 +117,20 @@ namespace MedicalAppointment.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
+                citaRepository.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool CitaExists(int id)
         {
-            return db.Citas.Count(e => e.Id == id) > 0;
+            Cita cita = citaRepository.GetCitaByID(id);
+            if (cita == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

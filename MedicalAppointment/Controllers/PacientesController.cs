@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MedicalAppointment.Models;
+using MedicalAppointment.DAL;
 
 namespace MedicalAppointment.Controllers
 {
@@ -17,18 +18,35 @@ namespace MedicalAppointment.Controllers
     {
         private MedicalAppointmentContext db = new MedicalAppointmentContext();
 
+        private IPacienteRepository pacienteRepository;
+
+        public PacientesController()
+        {
+            this.pacienteRepository = new PacienteRepository(new RepositoryContext());
+        }
         // GET: api/Pacientes
         public List<Paciente> GetPacientes()
         {
-            List<Paciente> pacientes = db.Pacientes.ToList() as List<Paciente>;
+           //List<Paciente> pacientes = db.Pacientes.ToList() as List<Paciente>;
+            List<Paciente> pacientes = pacienteRepository.GetPacientes();
             return pacientes;
         }
 
         // GET: api/Pacientes/5
         [ResponseType(typeof(Paciente))]
-        public async Task<IHttpActionResult> GetPaciente(int id)
+        public IHttpActionResult GetPaciente(int id)
         {
-            Paciente paciente = await db.Pacientes.FindAsync(id);
+            /*Paciente paciente = await db.Pacientes.FindAsync(id);
+            if (paciente == null)
+            {
+                return NotFound();
+            }*/
+
+            //if (id == null)
+            //{
+            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            //}
+            Paciente paciente =  pacienteRepository.GetPacienteByID(id);
             if (paciente == null)
             {
                 return NotFound();
@@ -39,7 +57,7 @@ namespace MedicalAppointment.Controllers
 
         // PUT: api/Pacientes/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutPaciente(int id, Paciente paciente)
+        public IHttpActionResult PutPaciente(int id, Paciente paciente)
         {
             if (!ModelState.IsValid)
             {
@@ -51,11 +69,13 @@ namespace MedicalAppointment.Controllers
                 return BadRequest();
             }
 
-            db.Entry(paciente).State = EntityState.Modified;
+            //db.Entry(paciente).State = EntityState.Modified;
+            pacienteRepository.UpdatePaciente(paciente);            
 
             try
             {
-                await db.SaveChangesAsync();
+                pacienteRepository.Save();
+                //await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -74,31 +94,41 @@ namespace MedicalAppointment.Controllers
 
         // POST: api/Pacientes
         [ResponseType(typeof(Paciente))]
-        public async Task<IHttpActionResult> PostPaciente(Paciente paciente)
+        public IHttpActionResult PostPaciente(Paciente paciente)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Pacientes.Add(paciente);
-            await db.SaveChangesAsync();
+            //db.Pacientes.Add(paciente);
+            //await db.SaveChangesAsync();
+            pacienteRepository.InsertPaciente(paciente);
+            pacienteRepository.Save();
 
             return CreatedAtRoute("DefaultApi", new { id = paciente.Id }, paciente);
         }
 
         // DELETE: api/Pacientes/5
         [ResponseType(typeof(Paciente))]
-        public async Task<IHttpActionResult> DeletePaciente(int id)
+        public IHttpActionResult DeletePaciente(int id)
         {
-            Paciente paciente = await db.Pacientes.FindAsync(id);
+            //Paciente paciente = await db.Pacientes.FindAsync(id);
+            //if (paciente == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //db.Pacientes.Remove(paciente);
+            //await db.SaveChangesAsync();
+
+            Paciente paciente = pacienteRepository.GetPacienteByID(id);
             if (paciente == null)
             {
                 return NotFound();
             }
-
-            db.Pacientes.Remove(paciente);
-            await db.SaveChangesAsync();
+            pacienteRepository.DeletePaciente(id);
+            pacienteRepository.Save();
 
             return Ok(paciente);
         }
@@ -107,14 +137,21 @@ namespace MedicalAppointment.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
+                pacienteRepository.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool PacienteExists(int id)
         {
-            return db.Pacientes.Count(e => e.Id == id) > 0;
+            //return db.Pacientes.Count(e => e.Id == id) > 0;
+            Paciente paciente = pacienteRepository.GetPacienteByID(id);
+            if (paciente == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

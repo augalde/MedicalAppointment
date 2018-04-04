@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MedicalAppointment.DAL
 {
-    public interface IPacienteRepository
+    public interface IPacienteRepository:IDisposable
     {
         List<Paciente> GetPacientes();
         

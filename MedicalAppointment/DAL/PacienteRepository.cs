@@ -39,7 +39,7 @@ namespace MedicalAppointment.DAL
 
         public int Save()
         {
-            return _context.SaveChanges();            
+            return  _context.SaveChanges();            
         }
 
         public void UpdatePaciente(Paciente paciente)
