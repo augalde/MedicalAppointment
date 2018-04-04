@@ -45,7 +45,7 @@ namespace MedicalAppointment.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != tipoCita.Id)
+            if (id != tipoCita.TipoCitaId)
             {
                 return BadRequest();
             }
@@ -83,7 +83,7 @@ namespace MedicalAppointment.Controllers
             db.TipoCitas.Add(tipoCita);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = tipoCita.Id }, tipoCita);
+            return CreatedAtRoute("DefaultApi", new { id = tipoCita.TipoCitaId }, tipoCita);
         }
 
         // DELETE: api/TipoCitas/5
@@ -113,7 +113,7 @@ namespace MedicalAppointment.Controllers
 
         private bool TipoCitaExists(int id)
         {
-            return db.TipoCitas.Count(e => e.Id == id) > 0;
+            return db.TipoCitas.Count(e => e.TipoCitaId == id) > 0;
         }
     }
 }

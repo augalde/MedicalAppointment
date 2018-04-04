@@ -5,12 +5,60 @@ using System.Web.Http.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MedicalAppointment.Controllers;
 using MedicalAppointment.Models;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Routing;
 
 namespace MedicalAppointmentAPI.Tests
 {
     [TestClass]
     public class TestCitaController
     {
+        [TestMethod]
+        public void GetReturnsPaciente()
+        {
+            // Arrange
+            var controller = new PacientesController();
+            controller.Request = new HttpRequestMessage();
+            controller.Configuration = new HttpConfiguration();
+
+            // Act
+            Paciente paciente = controller.GetPaciente(1) as Paciente;
+
+            // Assert
+            
+            ;
+            Assert.AreEqual("Alvaro Ugalde", paciente.Nombre);
+        }
+
+        [TestMethod]
+        public void PostSetsLocationHeader()
+        {
+            // Arrange
+            PacientesController controller = new PacientesController();
+
+            controller.Request = new HttpRequestMessage
+            {
+                RequestUri = new Uri("http://localhost/api/pacientes")
+            };
+            controller.Configuration = new HttpConfiguration();
+            controller.Configuration.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional });
+
+            controller.RequestContext.RouteData = new HttpRouteData(
+                route: new HttpRoute(),
+                values: new HttpRouteValueDictionary { { "controller", "pacientes" } });
+
+            // Act
+            Paciente paciente = new Paciente() { Nombre = "Juan Perez",Edad=5,Sexo="Masculino" };
+            var response = controller.PostPaciente(paciente);
+
+            // Assert
+            //Assert.AreEqual("http://localhost/api/paciente/3", response.Headers.Location.AbsoluteUri);
+        }
+
         [TestMethod]
         public void GetAllPacientes_ShouldReturnAllPacientes()
         {
@@ -42,8 +90,8 @@ namespace MedicalAppointmentAPI.Tests
         private List<Paciente> GetTestPacientes()
         {
             var testPaciente = new List<Paciente>();
-            testPaciente.Add(new Paciente { Id = 1, Nombre = "Alvaro Ugalde", Edad = 35, Sexo = "Masculino" });
-            testPaciente.Add(new Paciente { Id = 2, Nombre = "Carlos Alvarado", Edad = 41, Sexo = "Masculino"});
+            testPaciente.Add(new Paciente { PacienteId = 1, Nombre = "Alvaro Ugalde", Edad = 35, Sexo = "Masculino" });
+            testPaciente.Add(new Paciente { PacienteId = 2, Nombre = "Carlos Alvarado", Edad = 41, Sexo = "Masculino"});
         
 
             return testPaciente;

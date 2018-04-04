@@ -16,7 +16,7 @@ namespace MedicalAppointment.Controllers
 {
     public class PacientesController : ApiController
     {
-        private MedicalAppointmentContext db = new MedicalAppointmentContext();
+        //private MedicalAppointmentContext db = new MedicalAppointmentContext();
 
         private IPacienteRepository pacienteRepository;
 
@@ -56,30 +56,28 @@ namespace MedicalAppointment.Controllers
         }
 
         // PUT: api/Pacientes/5
+        [HttpPut]
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutPaciente(int id, Paciente paciente)
+        public IHttpActionResult PutPaciente(Paciente paciente)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != paciente.Id)
-            {
-                return BadRequest();
-            }
-
+            
             //db.Entry(paciente).State = EntityState.Modified;
             pacienteRepository.UpdatePaciente(paciente);            
 
             try
             {
                 pacienteRepository.Save();
+                return Ok();
                 //await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PacienteExists(id))
+                if (!PacienteExists(paciente.PacienteId))
                 {
                     return NotFound();
                 }
@@ -106,7 +104,7 @@ namespace MedicalAppointment.Controllers
             pacienteRepository.InsertPaciente(paciente);
             pacienteRepository.Save();
 
-            return CreatedAtRoute("DefaultApi", new { id = paciente.Id }, paciente);
+            return CreatedAtRoute("DefaultApi", new { id = paciente.PacienteId }, paciente);
         }
 
         // DELETE: api/Pacientes/5

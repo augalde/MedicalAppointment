@@ -12,7 +12,7 @@ namespace MedicalAppointment.Models
     {
         [Key]
         [Required]
-        public int Id { set; get; }
+        public int PacienteId { set; get; }
         [Required]
         public string Nombre { set; get; }
         [Required]

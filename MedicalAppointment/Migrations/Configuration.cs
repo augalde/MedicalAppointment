@@ -10,6 +10,7 @@ namespace MedicalAppointment.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
         }
 
         protected override void Seed(MedicalAppointment.Models.MedicalAppointmentContext context)

@@ -12,7 +12,7 @@ namespace MedicalAppointment.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { set; get; }
+        public int TipoCitaId { set; get; }
         public string Descripcion { set; get; }
     }
 }

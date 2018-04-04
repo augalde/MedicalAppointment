@@ -53,7 +53,11 @@ namespace MedicalAppointment.DAL
 
         public void InsertCita(Cita cita)
         {
+            //Paciente p = _context.Paciente.Find(cita.PacienteId);
+            //TipoCita tc = _context.TipoCita.Find(cita.TipoCitaId);
+            
             _context.Cita.Add(cita);
+            
         }
 
         public int Save()

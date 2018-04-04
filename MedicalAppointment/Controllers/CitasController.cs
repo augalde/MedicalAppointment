@@ -81,7 +81,7 @@ namespace MedicalAppointment.Controllers
 
         // POST: api/Citas
         [ResponseType(typeof(Cita))]
-        public async Task<IHttpActionResult> PostCita(Cita cita)
+        public IHttpActionResult PostCita(Cita cita)
         {
             if (!ModelState.IsValid)
             {
@@ -90,6 +90,9 @@ namespace MedicalAppointment.Controllers
 
             //db.Citas.Add(cita);
             //await db.SaveChangesAsync();
+
+            //cita.PacienteId.Id
+                
             citaRepository.InsertCita(cita);
             citaRepository.Save();
 

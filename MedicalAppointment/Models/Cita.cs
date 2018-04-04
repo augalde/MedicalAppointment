@@ -13,10 +13,10 @@ namespace MedicalAppointment.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { set; get; }
-        [ForeignKey("Id")]
-        public Paciente PacienteId { set; get; }
+        //[ForeignKey("Paciente")]
+        public int PacienteId { set; get; }
         public DateTime Fecha { set; get; }
-        [ForeignKey("Id")]
-        public TipoCita TipoCitaId { set; get; }
+        //[ForeignKey("TipoCita")]
+        public int TipoCitaId { set; get; }
     }
 }
