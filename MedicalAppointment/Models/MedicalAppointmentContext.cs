@@ -24,5 +24,7 @@ namespace MedicalAppointment.Models
         public System.Data.Entity.DbSet<MedicalAppointment.Models.TipoCita> TipoCitas { get; set; }
 
         public System.Data.Entity.DbSet<MedicalAppointment.Models.Cita> Citas { get; set; }
+
+        public System.Data.Entity.DbSet<MedicalAppointment.Models.UserModel> UserModels { get; set; }
     }
 }

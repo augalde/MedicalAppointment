@@ -238,6 +238,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PacientesController.cs" />
     <Compile Include="Controllers\TipoCitasController.cs" />
+    <Compile Include="Controllers\UserModelsController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DAL\CitaRepository.cs" />
     <Compile Include="DAL\GenericRepository.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="Models\Paciente.cs" />
     <Compile Include="Models\RepositoryContext.cs" />
     <Compile Include="Models\TipoCita.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />

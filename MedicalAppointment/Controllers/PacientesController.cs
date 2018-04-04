@@ -91,6 +91,7 @@ namespace MedicalAppointment.Controllers
         }
 
         // POST: api/Pacientes
+        [HttpPost]
         [ResponseType(typeof(Paciente))]
         public IHttpActionResult PostPaciente(Paciente paciente)
         {
