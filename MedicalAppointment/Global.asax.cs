@@ -18,6 +18,8 @@ namespace MedicalAppointment
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            //adding dependency injection
+            Bootstrapper.Initialise();
         }
     }
 }

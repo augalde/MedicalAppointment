@@ -8,6 +8,9 @@ using MedicalAppointment.Models;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Routing;
+using MedicalAppointment.DAL;
+using Moq;
+using System.Data.Entity;
 
 namespace MedicalAppointmentAPI.Tests
 {
@@ -15,87 +18,152 @@ namespace MedicalAppointmentAPI.Tests
     public class TestCitaController
     {
         [TestMethod]
-        public void GetReturnsPaciente()
+        public void TestGetAllUsers()
+        {
+           // //Arrange
+           // Cita varCita1 = new Cita { Id = 1, PacienteId = 111380195, Fecha = new DateTime(), TipoCitaId = 1 };
+           // //var mock = new Mock<DbContext>();
+           // //mock.Setup(x => x.Set<Cita>())
+           // //    .Returns(new FakeDbSet<Cita>
+           // //    {
+           // //new Cita { Id = 1, PacienteId = 111380195, Fecha = new DateTime(), TipoCitaId = 1}
+           // //    });
+
+           // var userDbSet = new FakeDbSet<Cita>();
+           // userDbSet.Add(varCita1);
+
+           // var contextMock = new Mock<RepositoryContext>();
+           // contextMock.Setup(dbContext => dbContext.Cita).Returns(userDbSet);
+
+           //// UserService userService = new UserService(mock.Object);
+
+           // // Act
+           // var allUsers = userService.GetAllUsers();
+
+           // // Assert
+           // Assert.AreEqual(1, allUsers.Count());
+        }
+
+        [TestMethod]
+        public void Test_INSERT_And_Retrieve_Cita()
         {
             // Arrange
-            var controller = new PacientesController();
-            controller.Request = new HttpRequestMessage();
-            controller.Configuration = new HttpConfiguration();
+            Cita cita1 = new Cita { Id = 1, PacienteId = 111380195, Fecha = new DateTime(), TipoCitaId = 1};
 
-            // Act
-            Paciente paciente = controller.GetPaciente(1) as Paciente;
+            ICitaRepository citaRepository  = new CitaRepository(new RepositoryContext());
 
-            // Assert
+            citaRepository.InsertCita(cita1);
+            var controller = new CitasController(citaRepository);
             
-            ;
-            Assert.AreEqual("Alvaro Ugalde", paciente.Nombre);
+            // Act
+            var result = controller.GetCita(1);
+
+            // 
+            Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void PostSetsLocationHeader()
+        public void Test_INSERT_And_Retrieve_CitabyId()
         {
             // Arrange
-            PacientesController controller = new PacientesController();
+            Cita cita1 = new Cita { Id = 123, PacienteId = 111380195, Fecha = new DateTime(), TipoCitaId = 1 };
 
-            controller.Request = new HttpRequestMessage
-            {
-                RequestUri = new Uri("http://localhost/api/pacientes")
-            };
-            controller.Configuration = new HttpConfiguration();
-            controller.Configuration.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional });
-
-            controller.RequestContext.RouteData = new HttpRouteData(
-                route: new HttpRoute(),
-                values: new HttpRouteValueDictionary { { "controller", "pacientes" } });
+            ICitaRepository citaRepository = new CitaRepository(new RepositoryContext());
+            
+            citaRepository.InsertCita(cita1);
+            var controller = new CitasController(citaRepository);
 
             // Act
-            Paciente paciente = new Paciente() { Nombre = "Juan Perez",Edad=5,Sexo="Masculino" };
-            var response = controller.PostPaciente(paciente);
+            var result = controller.GetCita(123);
+            var citaResult = result as OkNegotiatedContentResult<Cita>;
+            
 
-            // Assert
-            //Assert.AreEqual("http://localhost/api/paciente/3", response.Headers.Location.AbsoluteUri);
+            // 
+            Assert.Equals(citaResult.Content.PacienteId, 111380195);
         }
 
-        [TestMethod]
-        public void GetAllPacientes_ShouldReturnAllPacientes()
-        {
-            var testProducts = GetTestPacientes();
-            var controller = new PacientesController();
+        //[TestMethod]
+        //public void GetReturnsPaciente()
+        //{
+        //    // Arrange
+        //    var controller = new PacientesController();
+        //    controller.Request = new HttpRequestMessage();
+        //    controller.Configuration = new HttpConfiguration();
 
-            var result = controller.GetPacientes() as List<Paciente>;
-            Assert.AreEqual(testProducts.Count, result.Count);
-        }
-        [TestMethod]
-        public void GetPaciente_ShouldReturnCorrectPaciente()
-        {
-            var testProducts = GetTestPacientes();
-            var controller = new PacientesController();
+        //    // Act
+        //    Paciente paciente = controller.GetPaciente(1) as Paciente;
 
-            var result = controller.GetPaciente(1) as OkNegotiatedContentResult<Paciente>;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(testProducts[1].Nombre, result.Content.Nombre);
-        }
-        [TestMethod]
-        public void GetPaciente_ShouldNotFindPaciente()
-        {
-            var controller = new PacientesController();
+        //    // Assert
 
-            var result = controller.GetPaciente(0);
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
-        }
+        //    ;
+        //    Assert.AreEqual("Alvaro Ugalde", paciente.Nombre);
+        //}
 
-        private List<Paciente> GetTestPacientes()
-        {
-            var testPaciente = new List<Paciente>();
-            testPaciente.Add(new Paciente { PacienteId = 1, Nombre = "Alvaro Ugalde", Edad = 35, Sexo = "Masculino" });
-            testPaciente.Add(new Paciente { PacienteId = 2, Nombre = "Carlos Alvarado", Edad = 41, Sexo = "Masculino"});
-        
+        //[TestMethod]
+        //public void PostSetsLocationHeader()
+        //{
+        //    // Arrange
+        //    PacientesController controller = new PacientesController();
 
-            return testPaciente;
-        }
+        //    controller.Request = new HttpRequestMessage
+        //    {
+        //        RequestUri = new Uri("http://localhost/api/pacientes")
+        //    };
+        //    controller.Configuration = new HttpConfiguration();
+        //    controller.Configuration.Routes.MapHttpRoute(
+        //        name: "DefaultApi",
+        //        routeTemplate: "api/{controller}/{id}",
+        //        defaults: new { id = RouteParameter.Optional });
+
+        //    controller.RequestContext.RouteData = new HttpRouteData(
+        //        route: new HttpRoute(),
+        //        values: new HttpRouteValueDictionary { { "controller", "pacientes" } });
+
+        //    // Act
+        //    Paciente paciente = new Paciente() { Nombre = "Juan Perez",Edad=5,Sexo="Masculino" };
+        //    var response = controller.PostPaciente(paciente);
+
+        //    // Assert
+        //    //Assert.AreEqual("http://localhost/api/paciente/3", response.Headers.Location.AbsoluteUri);
+        //}
+
+        //[TestMethod]
+        //public void GetAllPacientes_ShouldReturnAllPacientes()
+        //{
+        //    var testProducts = GetTestPacientes();
+        //    var controller = new PacientesController();
+
+        //    var result = controller.GetPacientes() as List<Paciente>;
+        //    Assert.AreEqual(testProducts.Count, result.Count);
+        //}
+        //[TestMethod]
+        //public void GetPaciente_ShouldReturnCorrectPaciente()
+        //{
+        //    var testProducts = GetTestPacientes();
+        //    var controller = new PacientesController();
+
+        //    var result = controller.GetPaciente(1) as OkNegotiatedContentResult<Paciente>;
+        //    Assert.IsNotNull(result);
+        //    Assert.AreEqual(testProducts[1].Nombre, result.Content.Nombre);
+        //}
+        //[TestMethod]
+        //public void GetPaciente_ShouldNotFindPaciente()
+        //{
+        //    var controller = new PacientesController();
+
+        //    var result = controller.GetPaciente(0);
+        //    Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        //}
+
+        //private List<Paciente> GetTestPacientes()
+        //{
+        //    var testPaciente = new List<Paciente>();
+        //    testPaciente.Add(new Paciente { PacienteId = 1, Nombre = "Alvaro Ugalde", Edad = 35, Sexo = "Masculino" });
+        //    testPaciente.Add(new Paciente { PacienteId = 2, Nombre = "Carlos Alvarado", Edad = 41, Sexo = "Masculino"});
+
+
+        //    return testPaciente;
+        //}
 
     }
 }

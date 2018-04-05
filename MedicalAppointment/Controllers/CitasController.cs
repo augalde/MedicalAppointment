@@ -19,9 +19,15 @@ namespace MedicalAppointment.Controllers
         //private MedicalAppointmentContext db = new MedicalAppointmentContext();
         private ICitaRepository citaRepository;
 
+        public CitasController(ICitaRepository citaRepository)
+        {
+            //this.citaRepository = new CitaRepository(new RepositoryContext());
+            this.citaRepository = citaRepository;
+        }
         public CitasController()
         {
             this.citaRepository = new CitaRepository(new RepositoryContext());
+            
         }
         // GET: api/Citas
         public List<Cita> GetCitas()
