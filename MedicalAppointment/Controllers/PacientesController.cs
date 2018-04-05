@@ -72,7 +72,7 @@ namespace MedicalAppointment.Controllers
             try
             {
                 pacienteRepository.Save();
-                return Ok();
+                return Ok(new { operationStatus = true});
                 //await db.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

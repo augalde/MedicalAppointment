@@ -10,24 +10,30 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using MedicalAppointment.Models;
+using MedicalAppointment.DAL;
 
 namespace MedicalAppointment.Controllers
 {
     public class TipoCitasController : ApiController
     {
-        private MedicalAppointmentContext db = new MedicalAppointmentContext();
-
-        // GET: api/TipoCitas
-        public IQueryable<TipoCita> GetTipoCitas()
+        //private MedicalAppointmentContext db = new MedicalAppointmentContext();
+        private ITipoCitaRepository tipoCitaRepository;
+        public TipoCitasController()
         {
-            return db.TipoCitas;
+            this.tipoCitaRepository = new TipoCitaRepository(new RepositoryContext());
+        }
+        // GET: api/TipoCitas
+        public List<TipoCita> GetTipoCitas()
+        {
+            List<TipoCita> tipoCitaList = tipoCitaRepository.GetTipoCitas();
+            return tipoCitaList;
         }
 
         // GET: api/TipoCitas/5
         [ResponseType(typeof(TipoCita))]
-        public async Task<IHttpActionResult> GetTipoCita(int id)
+        public IHttpActionResult GetTipoCita(int id)
         {
-            TipoCita tipoCita = await db.TipoCitas.FindAsync(id);
+            TipoCita tipoCita = tipoCitaRepository.GetTipoCitaByID(id);
             if (tipoCita == null)
             {
                 return NotFound();
@@ -36,84 +42,84 @@ namespace MedicalAppointment.Controllers
             return Ok(tipoCita);
         }
 
-        // PUT: api/TipoCitas/5
-        [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutTipoCita(int id, TipoCita tipoCita)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// PUT: api/TipoCitas/5
+        //[ResponseType(typeof(void))]
+        //public async Task<IHttpActionResult> PutTipoCita(int id, TipoCita tipoCita)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (id != tipoCita.TipoCitaId)
-            {
-                return BadRequest();
-            }
+        //    if (id != tipoCita.TipoCitaId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            db.Entry(tipoCita).State = EntityState.Modified;
+        //    db.Entry(tipoCita).State = EntityState.Modified;
 
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TipoCitaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await db.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!TipoCitaExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
+        //    return StatusCode(HttpStatusCode.NoContent);
+        //}
 
-        // POST: api/TipoCitas
-        [ResponseType(typeof(TipoCita))]
-        public async Task<IHttpActionResult> PostTipoCita(TipoCita tipoCita)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST: api/TipoCitas
+        //[ResponseType(typeof(TipoCita))]
+        //public async Task<IHttpActionResult> PostTipoCita(TipoCita tipoCita)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            db.TipoCitas.Add(tipoCita);
-            await db.SaveChangesAsync();
+        //    db.TipoCitas.Add(tipoCita);
+        //    await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = tipoCita.TipoCitaId }, tipoCita);
-        }
+        //    return CreatedAtRoute("DefaultApi", new { id = tipoCita.TipoCitaId }, tipoCita);
+        //}
 
-        // DELETE: api/TipoCitas/5
-        [ResponseType(typeof(TipoCita))]
-        public async Task<IHttpActionResult> DeleteTipoCita(int id)
-        {
-            TipoCita tipoCita = await db.TipoCitas.FindAsync(id);
-            if (tipoCita == null)
-            {
-                return NotFound();
-            }
+        //// DELETE: api/TipoCitas/5
+        //[ResponseType(typeof(TipoCita))]
+        //public async Task<IHttpActionResult> DeleteTipoCita(int id)
+        //{
+        //    TipoCita tipoCita = await db.TipoCitas.FindAsync(id);
+        //    if (tipoCita == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            db.TipoCitas.Remove(tipoCita);
-            await db.SaveChangesAsync();
+        //    db.TipoCitas.Remove(tipoCita);
+        //    await db.SaveChangesAsync();
 
-            return Ok(tipoCita);
-        }
+        //    return Ok(tipoCita);
+        //}
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                tipoCitaRepository.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        private bool TipoCitaExists(int id)
-        {
-            return db.TipoCitas.Count(e => e.TipoCitaId == id) > 0;
-        }
+        //private bool TipoCitaExists(int id)
+        //{
+        //    return db.TipoCitas.Count(e => e.TipoCitaId == id) > 0;
+        //}
     }
 }

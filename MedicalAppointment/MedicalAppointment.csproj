@@ -244,7 +244,11 @@
     <Compile Include="DAL\GenericRepository.cs" />
     <Compile Include="DAL\ICitaRepository.cs" />
     <Compile Include="DAL\IPacienteRepository.cs" />
+    <Compile Include="DAL\ITipoCitaRepository.cs" />
+    <Compile Include="DAL\IUser.cs" />
     <Compile Include="DAL\PacienteRepository.cs" />
+    <Compile Include="DAL\TipoCitaRepository.cs" />
+    <Compile Include="DAL\UserRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
