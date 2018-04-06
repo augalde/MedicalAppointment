@@ -33,12 +33,12 @@ namespace MedicalAppointment.Migrations
               new Models.UserModel { Nombre = "testadmin", Rol = "Admin" }
             );
             context.Pacientes.AddOrUpdate(
-              new Models.Paciente { PacienteId = 111380195, Nombre = "Alvaro Ugalde", Edad = 35, Sexo ="Masculino" },
-              new Models.Paciente { PacienteId = 505020101, Nombre = "Juan Perez", Edad = 54, Sexo = "Masculino" }
+              new Models.Paciente { PacienteId = 1, Nombre = "Alvaro Ugalde", Edad = 35, Sexo ="Masculino" },
+              new Models.Paciente { PacienteId = 2, Nombre = "Juan Perez", Edad = 54, Sexo = "Masculino" }
             );
             context.Citas.AddOrUpdate(
-              new Models.Cita { Id = 1, PacienteId = 111380195, Fecha = new DateTime(2018,5,5,12,0,0), TipoCitaId = 1},
-              new Models.Cita { Id = 1, PacienteId = 111380195, Fecha = new DateTime(2018, 5, 12, 12, 0, 0), TipoCitaId = 2 }
+              new Models.Cita { Id = 1, PacienteId = 1, Fecha = new DateTime(2018,5,5,12,0,0), TipoCitaId = 1},
+              new Models.Cita { Id = 1, PacienteId = 1, Fecha = new DateTime(2018, 5, 12, 12, 0, 0), TipoCitaId = 2 }
             );
         }
     }

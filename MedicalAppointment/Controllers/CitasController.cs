@@ -11,6 +11,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using MedicalAppointment.Models;
 using MedicalAppointment.DAL;
+using MedicalAppointment.Filters;
 
 namespace MedicalAppointment.Controllers
 {
@@ -50,18 +51,16 @@ namespace MedicalAppointment.Controllers
         }
 
         // PUT: api/Citas/5
+        [HttpPut]
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutCita(int id, Cita cita)
+        public IHttpActionResult PutCita( Cita cita)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != cita.Id)
-            {
-                return BadRequest();
-            }
+            
 
             //db.Entry(cita).State = EntityState.Modified;
             citaRepository.UpdateCita(cita);
@@ -72,7 +71,7 @@ namespace MedicalAppointment.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CitaExists(id))
+                if (!CitaExists(cita.Id))
                 {
                     return NotFound();
                 }
@@ -82,10 +81,11 @@ namespace MedicalAppointment.Controllers
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(cita);
         }
 
         // POST: api/Citas
+        [ValidatingCita]
         [ResponseType(typeof(Cita))]
         public IHttpActionResult PostCita(Cita cita)
         {
