@@ -66,10 +66,11 @@ namespace MedicalAppointment.Controllers
                 return BadRequest("La fecha de la cita no puede estar dentro de las proximas 24 horas.");
             }
 
-            if (IsAnyCitaSameDate(cita))
-            {
-                return BadRequest("Ya posee una cita para ese dia, por favor seleccione otra fecha");
-            }
+            //TODO, citas are atteched, I need to detach the context before update 
+            //if (IsAnyCitaSameDate(cita))
+            //{
+            //    return BadRequest("Ya posee una cita para ese dia, por favor seleccione otra fecha");
+            //}
 
             //db.Entry(cita).State = EntityState.Modified;
             citaRepository.UpdateCita(cita);
@@ -105,7 +106,8 @@ namespace MedicalAppointment.Controllers
         }
         private bool IsAnyCitaSameDate(Cita cita)
         {
-            IEnumerable<Cita> readCitas = citaRepository.GetCitas().Where(x => x.PacienteId == cita.PacienteId && x.Fecha.Date == cita.Fecha.Date && x.Id != cita.Id);
+            
+            List<Cita> readCitas = citaRepository.GetCitas().Where(x => x.PacienteId == cita.PacienteId && x.Fecha.Date == cita.Fecha.Date && x.Id != cita.Id).ToList();
             if (readCitas == null || readCitas.Count() <=0 )
             {
                 return false;
