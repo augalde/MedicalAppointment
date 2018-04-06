@@ -60,7 +60,16 @@ namespace MedicalAppointment.Controllers
                 return BadRequest(ModelState);
             }
 
-            
+            //validations for dates
+            if (isIn24hr(cita.Fecha))
+            {
+                return BadRequest("La fecha de la cita no puede estar dentro de las proximas 24 horas.");
+            }
+
+            if (IsAnyCitaSameDate(cita))
+            {
+                return BadRequest("Ya posee una cita para ese dia, por favor seleccione otra fecha");
+            }
 
             //db.Entry(cita).State = EntityState.Modified;
             citaRepository.UpdateCita(cita);
@@ -84,6 +93,26 @@ namespace MedicalAppointment.Controllers
             return Ok(cita);
         }
 
+        //Move the code to the BL and perform validations
+        //Server Side valitation
+        private bool isIn24hr(DateTime citaTime)
+        {
+            if(citaTime < DateTime.Now.AddHours(24))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool IsAnyCitaSameDate(Cita cita)
+        {
+            IEnumerable<Cita> readCitas = citaRepository.GetCitas().Where(x => x.PacienteId == cita.PacienteId && x.Fecha.Date == cita.Fecha.Date && x.Id != cita.Id);
+            if (readCitas == null || readCitas.Count() <=0 )
+            {
+                return false;
+            }
+            return true;
+        }
+
         // POST: api/Citas
         [ValidatingCita]
         [ResponseType(typeof(Cita))]
@@ -92,6 +121,17 @@ namespace MedicalAppointment.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            //validations for dates
+            if (isIn24hr(cita.Fecha))
+            {
+                return BadRequest("La fecha de la cita no puede estar dentro de las proximas 24 horas." );
+            }
+
+            if(IsAnyCitaSameDate(cita))
+            {
+                return BadRequest("Ya posee una cita para ese dia, por favor seleccione otra fecha");
             }
 
             //db.Citas.Add(cita);
