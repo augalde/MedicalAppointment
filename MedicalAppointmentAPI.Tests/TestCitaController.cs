@@ -66,7 +66,7 @@ namespace MedicalAppointmentAPI.Tests
         public void Test_INSERT_And_Retrieve_CitabyId()
         {
             // Arrange
-            Cita cita1 = new Cita { Id = 123, PacienteId = 111380195, Fecha = new DateTime(), TipoCitaId = 1 };
+            Cita cita1 = new Cita { Id = 4, PacienteId = 1, Fecha = new DateTime(), TipoCitaId = 1 };
 
             ICitaRepository citaRepository = new CitaRepository(new RepositoryContext());
             
@@ -74,12 +74,12 @@ namespace MedicalAppointmentAPI.Tests
             var controller = new CitasController(citaRepository);
 
             // Act
-            var result = controller.GetCita(123);
+            var result = controller.GetCita(4);
             var citaResult = result as OkNegotiatedContentResult<Cita>;
             
 
             // 
-            Assert.Equals(citaResult.Content.PacienteId, 111380195);
+            Assert.AreEqual(citaResult.Content.PacienteId, 1);
         }
 
         //[TestMethod]
